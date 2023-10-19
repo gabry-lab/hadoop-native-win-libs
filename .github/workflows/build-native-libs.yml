@@ -2,10 +2,15 @@ name: learn-github-actions
 run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 jobs:
-  check-bats-version:
+  build-native-libs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          name: apache/hadoop
+          ref: branch-3,3
       - uses: microsoft/setup-msbuild@v1
       - run: msbuild /version
       - run: mvn -v
+      - run: gci env:* | sort-object name

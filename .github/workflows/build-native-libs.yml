@@ -5,6 +5,8 @@ jobs:
   build-native-libs:
     runs-on: windows-latest
     steps:
+      - name: Set environment vars
+        run: SETX Platform x64 ; SETX VCVARSPLAT amd64 ; SETX MSVS C:\Program Files\Microsoft Visual Studio\2022 && CALL "%MSVS%\VC\vcvarsall.bat" %VCVARSPLAT%
       - run: choco install visualcpp-build-tools -y
       - run: git config --system core.longpaths true
       - uses: actions/checkout@v4
@@ -29,4 +31,4 @@ jobs:
 #      - run: "mvn install -Pdist -DskipTests '-Dmaven.javadoc.skip=true' -pl :hadoop-maven-plugins"
       - name: Run native build
         run: "mvn package '-Pdist,native-win' -DskipTests '-Dmaven.javadoc.skip=true' -pl ':hadoop-common,:hadoop-maven-plugins'; if (-not $?) { echo Make result code 0 } "
-        continue-on-error: true
+        continue-on-error: false

@@ -15,5 +15,5 @@ jobs:
       - run: mvn -v
       - run: gci env:* | sort-object name
       - run: "pwd"
-      - run: "mvn install -Pdist -DskipTests -pl :hadoop-maven-plugins"
-      - run: "mvn package -Pdist,native-win -DskipTests -Dmaven.javadoc.skip=true -pl :hadoop-common"
+      - run: "mvn install -Pdist -DskipTests '-Dmaven.javadoc.skip=true' -pl :hadoop-maven-plugins"
+      - run: "mvn package '-Pdist,native-win' -DskipTests '-Dmaven.javadoc.skip=true' -pl :hadoop-common"

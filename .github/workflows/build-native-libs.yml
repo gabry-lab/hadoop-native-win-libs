@@ -6,6 +6,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: git config --system core.longpaths true
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+          cache: 'maven'
       - uses: actions/checkout@v4
         with:
           repository: apache/hadoop
@@ -15,5 +20,5 @@ jobs:
       - run: mvn -v
       - run: gci env:* | sort-object name
       - run: "pwd"
-      - run: "mvn install -Pdist -DskipTests '-Dmaven.javadoc.skip=true' -pl :hadoop-maven-plugins"
-      - run: "mvn package '-Pdist,native-win' -DskipTests '-Dmaven.javadoc.skip=true' -pl :hadoop-common"
+#      - run: "mvn install -Pdist -DskipTests '-Dmaven.javadoc.skip=true' -pl :hadoop-maven-plugins"
+      - run: "mvn package '-Pdist,native-win' -DskipTests '-Dmaven.javadoc.skip=true' -pl ':hadoop-common,:hadoop-maven-plugins'"

@@ -5,9 +5,6 @@ jobs:
   build-native-libs:
     runs-on: windows-latest
     steps:
-      - name: Set environment vars
-        run: SETX Platform x64 ; SETX VCVARSPLAT amd64 ; SETX MSVS "C:\Program Files\Microsoft Visual Studio\2022\Enterprise" ; SET Platform x64 ; SET VCVARSPLAT amd64 ; SET MSVS "C:\Program Files\Microsoft Visual Studio\2022\Enterprise" ; & $MSVS\VC\vcvarsall.bat %VCVARSPLAT%
-      - run: choco install visualcpp-build-tools -y
       - run: git config --system core.longpaths true
       - uses: actions/checkout@v4
         with:
@@ -19,9 +16,10 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-      - uses: microsoft/setup-msbuild@v1
-      - name: Setup VS Dev Environment
-        uses: seanmiddleditch/gha-setup-vsdevenv@v4
+#      - uses: microsoft/setup-msbuild@v1
+#      - name: Setup VS Dev Environment
+#        uses: seanmiddleditch/gha-setup-vsdevenv@v4
+      - uses: ilammy/msvc-dev-cmd@v1
       - run: msbuild /version
       - run: mvn -v
       - run: gci env:* | sort-object name

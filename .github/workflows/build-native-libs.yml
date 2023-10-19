@@ -7,11 +7,13 @@ jobs:
     steps:
       - run: git config --system core.longpaths true
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
         with:
           repository: apache/hadoop
+          ref: branch-3.3
       - uses: microsoft/setup-msbuild@v1
       - run: msbuild /version
       - run: mvn -v
       - run: gci env:* | sort-object name
-      - run: pwd
+      - run: "pwd"
+      - run: "mvn install -Pdist -DskipTests -Dmaven.javadoc.skip=true -pl :hadoop-maven-plugins"
+      - run: "mvn package -Pdist,native-win -DskipTests -Dmaven.javadoc.skip=true -pl :hadoop-common"

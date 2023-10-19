@@ -6,9 +6,9 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: apache/hadoop
+#      - uses: actions/checkout@v4
+#        with:
+#          repository: apache/hadoop
       - uses: microsoft/setup-msbuild@v1
       - run: msbuild /version
       - run: mvn -v

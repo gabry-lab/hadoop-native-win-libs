@@ -6,7 +6,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Set environment vars
-        run: SETX Platform x64 ; SETX VCVARSPLAT amd64 ; SETX MSVS C:\Program Files\Microsoft Visual Studio\2022 ; "%MSVS%\VC\vcvarsall.bat" %VCVARSPLAT%
+        run: SETX Platform x64 ; SETX VCVARSPLAT amd64 ; SETX MSVS "C:\Program Files\Microsoft Visual Studio\2022" ; SET Platform x64 ; SET VCVARSPLAT amd64 ; SET MSVS "C:\Program Files\Microsoft Visual Studio\2022" ; & $MSVS\VC\vcvarsall.bat %VCVARSPLAT%
       - run: choco install visualcpp-build-tools -y
       - run: git config --system core.longpaths true
       - uses: actions/checkout@v4

@@ -1,4 +1,4 @@
-name: learn-github-actions
+name: build-native-win-hadoop-libs
 run-name: Binaries for hadoop release ${{ github.ref_name }}
 on: [push]
 jobs:
@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: apache/hadoop
-          ref: branch-3.3
+          ref: ${{ github.ref_name }}
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:

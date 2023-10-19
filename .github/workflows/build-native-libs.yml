@@ -30,3 +30,9 @@ jobs:
       - name: Run native build
         run: "mvn package '-Pnative-win' -DskipTests '-Dmaven.javadoc.skip=true' -pl ':hadoop-common,:hadoop-maven-plugins'"
         continue-on-error: false
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: generated-binaries
+          path: D:\a\hadoop-native-win-libs\hadoop-native-win-libs\hadoop-common-project\hadoop-common\target/bin
+          retention-days: 5

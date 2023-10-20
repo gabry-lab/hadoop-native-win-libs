@@ -17,6 +17,14 @@ jobs:
       - name: Check for modified files
         id: git-check
         run: echo ::set-output name=modified::$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")
+      - name: Output debug info
+        run: |
+          echo File list:
+          ls
+          echo Changed files list:
+          git status --porcelain
+          echo File content:
+          cat current-release.txt
       - name: Commit latest release version
         if: steps.git-check.outputs.modified == 'true'
         run: |
@@ -24,6 +32,4 @@ jobs:
           git config --global user.email 'notepass@proton.me'
           git commit -am "Updating latest detected release version to $(cat current-release.txt)"
           git add -A
-          git push
-          git branch "$(cat current-release.txt)"
           git push

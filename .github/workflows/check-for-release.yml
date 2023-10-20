@@ -10,17 +10,20 @@ jobs:
   check-for-new-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Cache Maven packages
+      - name: Cache hadoop git repo
         uses: actions/cache@v2
         with:
-          path: ${{ github.workspace }}/.m2
+          path: ${{ github.workspace }}/hadoop
           key: hadoop-repo
           restore-keys: hadoop-repo
-      - uses: actions/checkout@v4
+      - name: Checkout this repo
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.REPO_SCOPED_TOKEN }}
           path: checker
-      - uses: actions/checkout@v4
+      - name: Checkout hadoop repo
+        uses: actions/checkout@v4
+        if: ${{ hashFiles('hadoop/pom.xml') != '' }}
         with:
           repository: apache/hadoop
           path: hadoop

@@ -8,8 +8,8 @@ jobs:
     steps:
       - name: Create data
         run: |
-          mkdir release_dir
-          echo release content > release_dir/release.txt
+          mkdir "$GITHUB_WORKSPACE/release_dir"
+          echo release content > "$GITHUB_WORKSPACE/release_dir/release.txt"
       - name: Create release
         uses: actions/create-release@v1
         id: create_release
@@ -28,6 +28,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ~/release_dir
+          asset_path: ${{ github.workspace }}/release_dir
           asset_name: hadoop-winutils.zip
           asset_content_type: application/zip

@@ -25,7 +25,7 @@ jobs:
 #        uses: seanmiddleditch/gha-setup-vsdevenv@v4
       - uses: ilammy/msvc-dev-cmd@v1
       - name: Pre debug output
-      - run: |
+        run: |
           msbuild /version
           mvn -v
           gci env:* | sort-object name

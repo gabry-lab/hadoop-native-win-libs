@@ -44,7 +44,14 @@ jobs:
           cd "$env:GITHUB_WORKSPACE\hadoop-common-project\hadoop-common\target"
           Compress-Archive -Path .\bin -DestinationPath "$env:GITHUB_WORKSPACE\hadoop-win-utils.zip"
       - name: Create release (gh cmd)
+        if: ${{ startsWith(github.ref_name, 'rel/') }}
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
         run: |
-          gh release create -R "$env:GITHUB_REPOSITORY" -n "Windows binaries for hadoop release $env:GITHUB_REF_NAME" -t "$env:GITHUB_REF_NAME" --verify-tag "$env:GITHUB_REF_NAME" "$env:GITHUB_WORKSPACE\hadoop-win-utils.zip"
+          gh release create --latest -R "$env:GITHUB_REPOSITORY" -n "Windows binaries for hadoop release $env:GITHUB_REF_NAME" -t "$env:GITHUB_REF_NAME" --verify-tag "$env:GITHUB_REF_NAME" "$env:GITHUB_WORKSPACE\hadoop-win-utils.zip"
+      - name: Create pre-release (gh cmd)
+        if: ${{ !startsWith(github.ref_name, 'rel/') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
+        run: |
+          gh release create -p -R "$env:GITHUB_REPOSITORY" -n "Windows binaries for hadoop release $env:GITHUB_REF_NAME" -t "$env:GITHUB_REF_NAME" --verify-tag "$env:GITHUB_REF_NAME" "$env:GITHUB_WORKSPACE\hadoop-win-utils.zip"

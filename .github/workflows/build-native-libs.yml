@@ -1,6 +1,9 @@
 name: build-native-win-hadoop-libs
 run-name: Binaries for hadoop release ${{ github.ref_name }}
-on: [push]
+on:
+  push:
+    branches:
+      - '!main'
 jobs:
   build-native-libs:
     runs-on: windows-latest

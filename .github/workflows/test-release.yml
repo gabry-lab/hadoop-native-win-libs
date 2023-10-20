@@ -10,23 +10,12 @@ jobs:
         run: |
           mkdir "$GITHUB_WORKSPACE/release_dir"
           echo release content > "$GITHUB_WORKSPACE/release_dir/release.txt"
-      - name: Create release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          # TODO: set prerelease for non rel/ tags
-          prerelease: false
-          release_name: rel/release-3.3.6
-          body: Windows binaries (hadoop.dll and winutils.exe) for hadoop release rel/release-3.3.6
+      - name: Package release data
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          tar -cf "$GITHUB_WORKSPACE/release.tar" ./release_dir
+      - name: Create release (gh cmd)
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
-      - name: upload windows artifacts
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/release_dir
-          asset_name: hadoop-winutils.zip
-          asset_content_type: application/zip
+        run: |
+          gh release create -R notepass/hadoop-native-win-libs -n "Test Release" -t "GH CMD Test release" --verify-tag rel/release-3.3.6 "$GITHUB_WORKSPACE/release.tar"

@@ -10,11 +10,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.REPO_SCOPED_TOKEN }}
+          path: checker
+      - uses: actions/checkout@v4
+        with:
+          repository: apache/hadoop
+          path: hadoop
       - name: Fetch release version
         run: |
-          curl -sL -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/apache/hadoop/releases/latest > debug.txt
-          curl -sL -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/apache/hadoop/releases/latest | \
-          jq -r ".tag_name" > current-release.txt
+          cd hadoop
+          git tag --sort=-creatordate -l '*release-*'|head -n 1 |tee ../checker/current-release.txt
+          cd ../checker
       - name: Check for modified files
         id: git-check
         run: echo ::set-output name=modified::$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")
@@ -26,8 +31,6 @@ jobs:
           git status --porcelain
           echo current-release.txt:
           cat current-release.txt
-          echo debug.txt:
-          cat debug.txt
       - name: Commit latest release version
         if: steps.git-check.outputs.modified == 'true'
         run: |

@@ -42,4 +42,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
         run: |
-          gh release create -R notepass/hadoop-native-win-libs -n "Windows binaries for hadoop release $GITHUB_REF_NAME" -t "$GITHUB_REF_NAME" --verify-tag "$GITHUB_REF_NAME" "$GITHUB_WORKSPACE\hadoop-win-utils.zip"
+          gh release create -R "$GITHUB_REPOSITORY" -n "Windows binaries for hadoop release $GITHUB_REF_NAME" -t "$GITHUB_REF_NAME" --verify-tag "$GITHUB_REF_NAME" "$GITHUB_WORKSPACE\hadoop-win-utils.zip"

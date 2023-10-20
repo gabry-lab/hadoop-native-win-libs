@@ -1,12 +1,21 @@
 name: check-for-release
 run-name: Checking if there is a new hadoop release
-on: [push]
+on:
+  push:
+    branches:
+      - main
 #  schedule:
 #    - cron: "0 6 * * *"
 jobs:
   check-for-new-release:
     runs-on: ubuntu-latest
     steps:
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/.m2
+          key: hadoop-repo
+          restore-keys: hadoop-repo
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.REPO_SCOPED_TOKEN }}
@@ -52,6 +61,6 @@ jobs:
           git config --global user.email 'notepass@proton.me'
           git commit -am "Updating latest detected release version to $(cat current-release.txt)"
           git add -A
-          git push
-          git branch "$(cat current-release.txt)"
-          git push
+#          git push
+#          git branch "$(cat current-release.txt)"
+#          git push

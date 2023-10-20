@@ -1,0 +1,33 @@
+name: test-release
+run-name: Checking if there is a new hadoop release
+on:
+  workflow_dispatch:
+jobs:
+  check-for-new-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create data
+        run: |
+          mkdir release_dir
+          echo release content > release_dir/release.txt
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          # TODO: set prerelease for non rel/ tags
+          prerelease: false
+          release_name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref }}
+          body: Windows binaries (hadoop.dll and winutils.exe) for hadoop release ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
+      - name: upload windows artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ~/release_dir
+          asset_name: hadoop-winutils.zip
+          asset_content_type: application/zip

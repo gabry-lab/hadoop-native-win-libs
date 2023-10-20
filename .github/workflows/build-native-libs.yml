@@ -51,11 +51,11 @@ jobs:
           tag_name: ${{ github.ref }}
           body: Windows binaries (hadoop.dll and winutils.exe) for hadoop release ${{ github.ref_name }}
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
       - name: upload windows artifacts
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: D:\a\hadoop-native-win-libs\hadoop-native-win-libs\hadoop-common-project\hadoop-common\target/bin

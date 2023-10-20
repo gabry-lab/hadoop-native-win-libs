@@ -36,10 +36,10 @@ jobs:
         continue-on-error: false
       - name: Package release data
         run: |
-          cd "D:\a\hadoop-native-win-libs\hadoop-native-win-libs\hadoop-common-project\hadoop-common\target"
+          cd "$GITHUB_WORKSPACE\hadoop-common-project\hadoop-common\target"
           Compress-Archive -Path .\bin -DestinationPath "$GITHUB_WORKSPACE\hadoop-win-utils.zip"
       - name: Create release (gh cmd)
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
         run: |
-          gh release create -R notepass/hadoop-native-win-libs -n "Test Release" -t "GH CMD Test release" --verify-tag rel/release-3.3.6 "$GITHUB_WORKSPACE\hadoop-win-utils.zip"
+          gh release create -R notepass/hadoop-native-win-libs -n "Windows binaries for hadoop release $GITHUB_REF_NAME" -t "$GITHUB_REF_NAME" --verify-tag "$GITHUB_REF_NAME" "$GITHUB_WORKSPACE\hadoop-win-utils.zip"

@@ -1,11 +1,58 @@
-# Hadoop native lib
-*Note*: This repo is still WIP. For now, only the 3.3 branch is being build and the binaries are under artifacts
-of each pipeline run. They will be removed after 5 days. When done, they will be permanently found under releases.
+# Native windows libraries for hadoop
+This repository contains a pipeline which builds the Windows native libraries for Hadoop (winutils.exe and hadoop.dll)
+which are not distributed with hadoop.  
+Unlike other repos where the binaries are just uploaded to use, this repository aims to build the binaries via GitHub
+actions, thus making the build process transparent.
 
-This project contains a pipeline that build the native hadoop binaries (winutils.exe and hadoop.dll) for windows. 
-When it is finished there should be a release for each hadoop release containing the according binaries
-(Probably starting at 3.0.0). 
+*The download of the build binaries is possible via the "releases" section.*
 
-As the pipeline is publicly viewable and the infrastructure is out of my hand, there is basically no way for me to
-poison the binaries. So you shouldn't be worried about downloading virus infected applications. The source is always
-the official hadoop github mirror
+## How does this repo work?
+For each release tag generated in the [apache/hadoop](https://github.com/apache/hadoop) repo, this repo will also
+generate a tag. The creation of the tag will then trigger the build pipeline. This was done, so that the windows runner
+will not be used for polling the source repo, as it consumes more credit per minute. Additionally, I do like my bash
+over powershell. It also allows to push a tag manually to trigger a build.
+
+The main build pipeline will pull the hadoop repo at the tag detected before. Afterwards the maven goals needed to
+compile the binaries are called and a release containing the generated files is created.
+
+The file "current-release.txt" is only utilised by the release checker pipeline. It takes track of the last release
+that was detected, so that nothing is build multiple times. It plays no role for the main build pipeline, which will
+only take the tag name into account. So for building the tag name can differ from the file contents without issue.
+
+Because of architecture, the tag release might be visible a few minutes before the actual release. If a tag release 
+exists for a prolonged time (30 minutes) without a binary release, the build has probably failed. In the future, issues
+might be opened up automatically for failed builds.
+
+## How long does it take for the binaries to be available after a hadoop release?
+This repo checks at 6:00 (am) (probably UTC, I haven't read the documentation on cron actions) every day if there is a new
+release. If so, it will build it. The build itself takes about 10 minutes. So 6:30 (am) after a release should be a good
+time frame.
+
+## Are release candidates also build?
+Yes, release candidate tags are also build. They will be marked as pre-release.
+
+## Is the trunk being build in a "nightly" fashion?
+No, this isn't being done. If you need a trunk build, fork the repo, add the needed tokens as secrets
+(See next section) and push a "trunk" tag. That should build the current trunk, tho I never tested it.
+
+## How do I know that these binaries are not infected with a virus or poisoned in some other way?
+The builds are run on the public GitHub runner infrastructure, utilising the Windows Server 2022 image with VS Enterprise.
+You can check the pipeline definition and logs for each release to make sure nothing bad happened. Also fell free to
+fork this repository and build the binaries yourself with this. Everything should be configured in a way that there are
+no static references to this repository. You will need two tokens for this: ``RELEASE_SECRET`` which needs permissions
+to create a release and ``REPO_SCOPED_TOKEN`` which is permitted to push to the repo.
+
+## Why are there only builds for hadoop 3.3?
+Versions before 3.3 had various bugs and dependencies I would need to work around in this pipeline.
+For Versions 3.2 and earlier a "Command line too long" error can occur and versions 3.1 and earlier would require an
+installation of protocolbuffer to build.
+
+There is a nice [blog post](https://kontext.tech/article/378/compile-and-build-hadoop-321-on-windows-10-guide) regarding
+these issues and possible fixes. Tho, I haven't implemented these and I am not planning to if these issues do not appear
+in future releases.
+
+## Is this repo open for contributions?
+Yes, if you want to fix issues or just do some general cleanup open up a PR. I will be checking periodically.  
+Please do refrain from senseless refactoring - Meaning changing structures or workflows for no other reason than "making
+them nicer" or having them adhere to some weired rules. If a refactoring is needed for fixes or other measurable benefits
+it is of course welcome. I just want to avoid the cargo cult.

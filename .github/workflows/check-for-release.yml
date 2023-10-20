@@ -62,7 +62,7 @@ jobs:
         run: |
           cd checker
           git config --global user.name 'Update check pipeline'
-          git config --global user.email 'notepass@proton.me'
+          git config --global user.email 'actions@localhost.localdomain'
           echo "Adding modified files"
           git add -A
           echo "Creating commit"

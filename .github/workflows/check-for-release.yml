@@ -62,9 +62,15 @@ jobs:
           cd checker
           git config --global user.name 'Update check pipeline'
           git config --global user.email 'notepass@proton.me'
+          echo "Creating branch $(cat current-release.txt)"
+          git branch "$(cat current-release.txt)"
+          echo "Adding modified files"
           git add -A
+          echo "Creating commit"
           git commit -am "Updating latest detected release version to $(cat current-release.txt)"
-          git tag -a "$(cat current-release.txt)" -m "Trigger for build pipeline to create release $(cat current-release.txt)"
+          #echo "Creating tag"
+          #git tag -a "$(cat current-release.txt)" -m "Trigger for build pipeline to create release $(cat current-release.txt)"
+          echo "Pushing"
           git push
 #          git branch "$(cat current-release.txt)"
 #          git push

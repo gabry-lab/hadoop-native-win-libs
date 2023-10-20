@@ -34,30 +34,12 @@ jobs:
       - name: Run native build
         run: "mvn package '-Pnative-win' -DskipTests '-Dmaven.javadoc.skip=true' -pl ':hadoop-common,:hadoop-maven-plugins'"
         continue-on-error: false
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v3
-        with:
-          name: generated-binaries
-          path: D:\a\hadoop-native-win-libs\hadoop-native-win-libs\hadoop-common-project\hadoop-common\target/bin
-          retention-days: 5
-      - name: Create release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          # TODO: set prerelease for non rel/ tags
-          prerelease: false
-          release_name: ${{ github.ref_name }}
-          tag_name: ${{ github.ref }}
-          body: Windows binaries (hadoop.dll and winutils.exe) for hadoop release ${{ github.ref_name }}
+      - name: Package release data
+        run: |
+          cd "D:\a\hadoop-native-win-libs\hadoop-native-win-libs\hadoop-common-project\hadoop-common\target"
+          Compress-Archive -Path .\bin -DestinationPath "$GITHUB_WORKSPACE\hadoop-win-utils.zip"
+      - name: Create release (gh cmd)
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
-      - name: upload windows artifacts
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: D:\a\hadoop-native-win-libs\hadoop-native-win-libs\hadoop-common-project\hadoop-common\target/bin
-          asset_name: hadoop-winutils.zip
-          asset_content_type: application/zip
+        run: |
+          gh release create -R notepass/hadoop-native-win-libs -n "Test Release" -t "GH CMD Test release" --verify-tag rel/release-3.3.6 "$GITHUB_WORKSPACE\hadoop-win-utils.zip"

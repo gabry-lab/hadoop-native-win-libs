@@ -17,9 +17,9 @@ jobs:
           draft: false
           # TODO: set prerelease for non rel/ tags
           prerelease: false
-          release_name: ${{ github.ref }}
-          tag_name: ${{ github.ref }}
-          body: Windows binaries (hadoop.dll and winutils.exe) for hadoop release ${{ github.ref }}
+          release_name: rel/release-3.3.6
+          tag_name: rel/release-3.3.6
+          body: Windows binaries (hadoop.dll and winutils.exe) for hadoop release rel/release-3.3.6
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
       - name: upload windows artifacts

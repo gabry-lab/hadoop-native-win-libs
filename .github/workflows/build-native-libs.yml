@@ -24,9 +24,14 @@ jobs:
 #      - name: Setup VS Dev Environment
 #        uses: seanmiddleditch/gha-setup-vsdevenv@v4
       - uses: ilammy/msvc-dev-cmd@v1
-      - run: msbuild /version
-      - run: mvn -v
-      - run: gci env:* | sort-object name
+      - name: Pre debug output
+      - run: |
+          msbuild /version
+          mvn -v
+          gci env:* | sort-object name
+          echo "Ref name: $env:GITHUB_REF_NAME"
+          echo "Repo: $env:GITHUB_REPOSITORY"
+          echo "Workspace dir: $env:GITHUB_WORKSPACE"
       - run: "pwd"
 #      - run: mvn dependency:resolve
 #      - run: devenv
@@ -36,10 +41,10 @@ jobs:
         continue-on-error: false
       - name: Package release data
         run: |
-          cd "D:\a\hadoop-native-win-libs\hadoop-native-win-libs\hadoop-common-project\hadoop-common\target"
-          Compress-Archive -Path .\bin -DestinationPath "D:\a\hadoop-native-win-libs\hadoop-native-win-libs\hadoop-win-utils.zip"
+          cd "$env:GITHUB_WORKSPACE\hadoop-common-project\hadoop-common\target"
+          Compress-Archive -Path .\bin -DestinationPath "$env:GITHUB_WORKSPACE\hadoop-win-utils.zip"
       - name: Create release (gh cmd)
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
         run: |
-          gh release create -R "$GITHUB_REPOSITORY" -n "Windows binaries for hadoop release $GITHUB_REF_NAME" -t "$GITHUB_REF_NAME" --verify-tag "$GITHUB_REF_NAME" "$GITHUB_WORKSPACE\hadoop-win-utils.zip"
+          gh release create -R "$env:GITHUB_REPOSITORY" -n "Windows binaries for hadoop release $env:GITHUB_REF_NAME" -t "$env:GITHUB_REF_NAME" --verify-tag "$env:GITHUB_REF_NAME" "$env:GITHUB_WORKSPACE\hadoop-win-utils.zip"

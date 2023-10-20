@@ -68,7 +68,7 @@ jobs:
           git commit -am "Updating latest detected release version to $(cat current-release.txt)"
           echo "Pushing main"
           git push
-          echo "Creating branch $(cat current-release.txt)"
-          git branch "$(cat current-release.txt)"
-          echo "Pushing branch"
+          echo "Creating tag $(cat current-release.txt)"
+          git tag -a "$(cat current-release.txt)" -m "Trigger tag for $(cat current-release.txt) source branch"
+          echo "Pushing tag"
           git push origin "$(cat current-release.txt)"

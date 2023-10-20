@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "**"
+  workflow_dispatch:
 jobs:
   build-native-libs:
     runs-on: windows-latest
@@ -17,8 +18,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-m2
+          restore-keys: ${{ runner.os }}-m2
 #      - uses: microsoft/setup-msbuild@v1
 #      - name: Setup VS Dev Environment
 #        uses: seanmiddleditch/gha-setup-vsdevenv@v4

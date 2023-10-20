@@ -64,6 +64,7 @@ jobs:
           git config --global user.email 'notepass@proton.me'
           git add -A
           git commit -am "Updating latest detected release version to $(cat current-release.txt)"
-#          git push
+          git tag -a "$(cat current-release.txt)" -m "Trigger for build pipeline to create release $(cat current-release.txt)"
+          git push
 #          git branch "$(cat current-release.txt)"
 #          git push

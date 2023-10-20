@@ -20,7 +20,7 @@ jobs:
           echo -n Dir:
           pwd
           echo Sublistings:
-          ls -l ./*
+          ls -la ./*
       - name: Fetch release version
         run: |
           cd hadoop
@@ -34,7 +34,7 @@ jobs:
           echo -n Dir:
           pwd
           echo File list:
-          ls -l
+          ls -la
           echo Changed files list:
           git status --porcelain
           echo current-release.txt:

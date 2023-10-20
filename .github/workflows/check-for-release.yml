@@ -62,8 +62,8 @@ jobs:
           cd checker
           git config --global user.name 'Update check pipeline'
           git config --global user.email 'notepass@proton.me'
-          git commit -am "Updating latest detected release version to $(cat current-release.txt)"
           git add -A
+          git commit -am "Updating latest detected release version to $(cat current-release.txt)"
 #          git push
 #          git branch "$(cat current-release.txt)"
 #          git push

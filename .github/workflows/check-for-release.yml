@@ -1,0 +1,28 @@
+name: check-for-release
+run-name: Checking if there is a new hadoop release
+on: [push]
+#  schedule:
+#    - cron: "0 6 * * *"
+jobs:
+  check-for-new-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.REPO_SCOPED_TOKEN }}
+      - name: Fetch release version
+        run: |
+          curl -sL https://api.github.com/repos/apache/hadoop/releases/latest | \
+          jq -r ".tag_name" > current-release.txt
+      - name: Check for modified files
+        id: git-check
+        run: echo ::set-output name=modified::$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")
+      - name: Commit latest release version
+        if: steps.git-check.outputs.modified == 'true'
+        run: |
+          git config --global user.name 'Update check pipeline'
+          git config --global user.email 'notepass@proton.me'
+          git commit -am "Updating latest detected release version to $(cat current-release.txt)"
+          git push
+          git branch "$(cat current-release.txt)"
+          git push

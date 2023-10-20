@@ -24,6 +24,8 @@ jobs:
       - name: Fetch release version
         run: |
           cd hadoop
+          echo "Dir: $(pwd)"
+          git tag --sort=-creatordate
           git tag --sort=-creatordate -l '*release-*'|head -n 1 |tee ../checker/current-release.txt
           cd ../checker
       - name: Check for modified files

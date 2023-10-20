@@ -25,14 +25,15 @@ jobs:
         run: |
           cd hadoop
           echo "Dir: $(pwd)"
+          git fetch origin 'refs/tags/*:refs/tags/*'
           git tag --sort=-creatordate
           git tag --sort=-creatordate -l '*release-*'|head -n 1 |tee ../checker/current-release.txt
-          cd ../checker
       - name: Check for modified files
         id: git-check
         run: echo ::set-output name=modified::$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")
       - name: Output debug info
         run: |
+          cd checker
           echo -n Dir:
           pwd
           echo File list:

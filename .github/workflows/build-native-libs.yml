@@ -39,3 +39,24 @@ jobs:
           name: generated-binaries
           path: D:\a\hadoop-native-win-libs\hadoop-native-win-libs\hadoop-common-project\hadoop-common\target/bin
           retention-days: 5
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          # TODO: set prerelease for non rel/ tags
+          prerelease: false
+          release_name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref }}
+          body: Windows binaries (hadoop.dll and winutils.exe) for hadoop release ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: upload windows artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: D:\a\hadoop-native-win-libs\hadoop-native-win-libs\hadoop-common-project\hadoop-common\target/bin
+          asset_name: hadoop-winutils.zip
+          asset_content_type: application/zip

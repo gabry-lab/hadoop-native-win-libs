@@ -1,11 +1,11 @@
 name: check-for-release
 run-name: Checking if there is a new hadoop release
 on:
-  push:
-    branches:
-      - main
-#  schedule:
-#    - cron: "0 6 * * *"
+#  push:
+#    branches:
+#      - main
+  schedule:
+    - cron: "0 6 * * *"
 jobs:
   check-for-new-release:
     runs-on: ubuntu-latest

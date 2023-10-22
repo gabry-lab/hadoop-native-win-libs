@@ -56,3 +56,12 @@ Yes, if you want to fix issues or just do some general cleanup open up a PR. I w
 Please do refrain from senseless refactoring - Meaning changing structures or workflows for no other reason than "making
 them nicer" or having them adhere to some weired rules. If a refactoring is needed for fixes or other measurable benefits
 it is of course welcome. I just want to avoid the cargo cult.
+
+## On backwards and forwards compatibility of the binaries
+The parts of the repository containing the binaries for 
+[winutils](https://github.com/apache/hadoop/tree/trunk/hadoop-common-project/hadoop-common/src/main/winutils)
+and
+[hadoop.dll](https://github.com/apache/hadoop/tree/trunk/hadoop-common-project/hadoop-common/src/main/native)
+haven't seen actual code changes in quite a few years and probably won't anytime soon. So as long as you are not using
+an extremely outdated version of hadoop/spark they should be compatible. This should also mean that you probably won't
+need to update anytime soon.

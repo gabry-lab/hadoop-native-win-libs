@@ -45,7 +45,7 @@ jobs:
         id: git-check
         run: |
           cd checker
-          echo modified=$([ -z "`git status --porcelain`" ] && echo "false" || echo "true") > $GITHUB_STATE
+          echo modified=$((git status --porcelain | grep -E '^\sM\s') && echo "true" || echo "false") > $GITHUB_STATE
       - name: Output debug info
         run: |
           cd checker

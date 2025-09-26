@@ -36,29 +36,24 @@ jobs:
           echo Sublistings:
           ls -la ./*
       - name: Fetch release version
+        id: git-check
         run: |
           cd hadoop
           echo "Dir: $(pwd)"
           git fetch origin 'refs/tags/*:refs/tags/*'
-          git tag --sort=-creatordate
-          git tag --sort=-creatordate -l '*release-*'|head -n 1 |tee ../checker/current-release.txt
-      - name: Check for modified files
-        id: git-check
-        run: |
-          cd checker
-          echo $GITHUB_STATE
-          echo modified=$((git status --porcelain | grep -E '^\sM\s') && echo "true" || echo "false") > $GITHUB_STATE
-      - name: Output debug info
-        run: |
-          cd checker
-          echo -n Dir:
-          pwd
-          echo File list:
-          ls -la
-          echo Changed files list:
-          git status --porcelain
-          echo current-release.txt:
-          cat current-release.txt
+          git --no-pager tag
+          git --no-pager tag -l 'rel/*release-*' | grep -v "rel/release-X.Y.Z"
+          current_release_version=$(cat ../checker/current-release.txt)
+          next_release_version=$(git --no-pager tag -l 'rel/*release-*' | grep -v "rel/release-X.Y.Z" | grep -A 1 ${current_release_version} | tail -1)
+          echo "current_release_version=${current_release_version}, next_release_version=${next_release_version}"
+          echo modified=$([[ "${current_release_version}" == ${next_release_version} ]] && echo "false" || echo "true") > $GITHUB_STATE
+          echo ${next_release_version} > ../checker/current-release.txt
+#      - name: Check for modified files
+#        id: git-check
+#        run: |
+#          cd checker
+#          cat $GITHUB_STATE
+#          echo modified=$((git status --porcelain | grep -E '^\sM\s') && echo "true" || echo "false") > $GITHUB_STATE
       - name: Commit latest release version
         if: steps.git-check.outputs.modified == 'true'
         run: |

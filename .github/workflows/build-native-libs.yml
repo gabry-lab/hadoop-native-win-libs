@@ -41,7 +41,9 @@ jobs:
       - run: "pwd"
       - name: Run native build
         # run: "mvn package '-Pnative-win' -DskipTests '-Dmaven.javadoc.skip=true' -pl ':hadoop-common,:hadoop-maven-plugins'"
-        run: mvn package -Pdist -Pnative-win -Dmaven.javadoc.skip=true -DskipTests -Dtar
+        run: |
+          cd hadoop
+          mvn package -Pdist -Pnative-win -Dmaven.javadoc.skip=true -DskipTests -Dtar
         continue-on-error: false
       - name: Package release data
         run: |

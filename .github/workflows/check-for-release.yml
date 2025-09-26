@@ -21,7 +21,6 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v5
         with:
-          token: ${{ secrets.REPO_SCOPED_TOKEN }}
           path: checker
       - name: Checkout hadoop repo
         uses: actions/checkout@v5

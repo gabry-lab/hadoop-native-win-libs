@@ -40,7 +40,8 @@ jobs:
           echo "Workspace dir: $env:GITHUB_WORKSPACE"
       - run: "pwd"
       - name: Run native build
-        run: "mvn package '-Pnative-win' -DskipTests '-Dmaven.javadoc.skip=true' -pl ':hadoop-common,:hadoop-maven-plugins'"
+        # run: "mvn package '-Pnative-win' -DskipTests '-Dmaven.javadoc.skip=true' -pl ':hadoop-common,:hadoop-maven-plugins'"
+        run: mvn package -Pdist,native-win -Dmaven.javadoc.skip=true -DskipTests -Dtar
         continue-on-error: false
       - name: Package release data
         run: |

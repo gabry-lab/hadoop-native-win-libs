@@ -47,6 +47,7 @@ jobs:
           next_release_version=$(git --no-pager tag -l 'rel/*release-*' | grep -v "rel/release-X.Y.Z" | grep -A 1 ${current_release_version} | tail -1)
           echo "current_release_version=${current_release_version}, next_release_version=${next_release_version}"
           echo modified=$([[ "${current_release_version}" == ${next_release_version} ]] && echo "false" || echo "true") > $GITHUB_STATE
+          echo "GITHUB_STATE=$(cat $GITHUB_STATE)"
           echo ${next_release_version} > ../checker/current-release.txt
 #      - name: Check for modified files
 #        id: git-check

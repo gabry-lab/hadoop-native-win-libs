@@ -4,25 +4,24 @@ on:
   push:
     tags:
       - "**"
-  workflow_dispatch:
+#  workflow_dispatch:
 jobs:
   build-native-libs:
     runs-on: windows-latest
     steps:
       - run: git config --system core.longpaths true
-      - uses: actions/checkout@v4
+      - name: Checkout hadoop repo
+        uses: actions/checkout@v5
         with:
+          # https://github.com/actions/checkout
           repository: apache/hadoop
-          ref: ${{ github.ref_name }}
+          path: hadoop
       - name: Cache Maven packages
         uses: actions/cache@v3.3.2
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2
           restore-keys: ${{ runner.os }}-m2
-#      - uses: microsoft/setup-msbuild@v1
-#      - name: Setup VS Dev Environment
-#        uses: seanmiddleditch/gha-setup-vsdevenv@v4
       - uses: ilammy/msvc-dev-cmd@v1
       - name: Pre debug output
         run: |
@@ -33,9 +32,6 @@ jobs:
           echo "Repo: $env:GITHUB_REPOSITORY"
           echo "Workspace dir: $env:GITHUB_WORKSPACE"
       - run: "pwd"
-#      - run: mvn dependency:resolve
-#      - run: devenv
-#      - run: "mvn install -Pdist -DskipTests '-Dmaven.javadoc.skip=true' -pl :hadoop-maven-plugins"
       - name: Run native build
         run: "mvn package '-Pnative-win' -DskipTests '-Dmaven.javadoc.skip=true' -pl ':hadoop-common,:hadoop-maven-plugins'"
         continue-on-error: false

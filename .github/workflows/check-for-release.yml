@@ -27,7 +27,6 @@ jobs:
         with:
           # https://github.com/actions/checkout
           repository: apache/hadoop
-          ref: branch-3.3.6
           path: hadoop
       - name: Output debug info pre
         run: |

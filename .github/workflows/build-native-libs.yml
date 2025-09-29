@@ -1,28 +1,34 @@
 name: build-native-win-hadoop-libs
 run-name: Binaries for hadoop release ${{ github.ref_name }}
+#on:
+#  push:
+#    tags:
+#      - "**"
+
 on:
   push:
-    tags:
-      - "**"
-  workflow_dispatch:
+    branches:
+      - main
+      - dev
+
+#  workflow_dispatch:
 jobs:
   build-native-libs:
     runs-on: windows-latest
     steps:
       - run: git config --system core.longpaths true
-      - uses: actions/checkout@v4
+      - name: Checkout hadoop repo
+        uses: actions/checkout@v5
         with:
+          # https://github.com/actions/checkout
           repository: apache/hadoop
-          ref: ${{ github.ref_name }}
+          path: hadoop
       - name: Cache Maven packages
-        uses: actions/cache@v3.3.2
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2
           restore-keys: ${{ runner.os }}-m2
-#      - uses: microsoft/setup-msbuild@v1
-#      - name: Setup VS Dev Environment
-#        uses: seanmiddleditch/gha-setup-vsdevenv@v4
       - uses: ilammy/msvc-dev-cmd@v1
       - name: Pre debug output
         run: |
@@ -33,13 +39,12 @@ jobs:
           echo "Repo: $env:GITHUB_REPOSITORY"
           echo "Workspace dir: $env:GITHUB_WORKSPACE"
       - run: "pwd"
-#      - run: mvn dependency:resolve
-#      - run: devenv
-#      - run: "mvn install -Pdist -DskipTests '-Dmaven.javadoc.skip=true' -pl :hadoop-maven-plugins"
       - name: Run native build
         # run: "mvn package '-Pnative-win' -DskipTests '-Dmaven.javadoc.skip=true' -pl ':hadoop-common,:hadoop-maven-plugins'"
+      - run: |
+          cd hadoop
         # run: "mvn clean package -Dhttps.protocols=TLSv1.2 -DskipTests -DskipDocs -Pnative-win,dist -Dskip.platformToolsetDetection -Drequire.openssl -Drequire.test.libhadoop -Pyarn-ui -Dshell-executable=C:\Git\bin\bash.exe -Dtar -Dopenssl.prefix=C:\vcpkg\installed\x64-windows -Dcmake.prefix.path=C:\vcpkg\installed\x64-windows -Dwindows.cmake.toolchain.file=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -Dwindows.cmake.build.type=RelWithDebInfo -Dwindows.build.hdfspp.dll=off -Dwindows.no.sasl=on -Duse.platformToolsetVersion=v142"
-        run: "mvn clean package -Dhttps.protocols=TLSv1.2 -DskipTests -DskipDocs -Pnative-win,dist -Dskip.platformToolsetDetection -Drequire.openssl -Drequire.test.libhadoop -Pyarn-ui -Dtar -Dwindows.cmake.build.type=RelWithDebInfo -Dwindows.build.hdfspp.dll=off -Dwindows.no.sasl=on -Duse.platformToolsetVersion=v142"
+          "mvn clean package -Dhttps.protocols=TLSv1.2 -DskipTests -DskipDocs -Pnative-win,dist -Dskip.platformToolsetDetection -Drequire.openssl -Drequire.test.libhadoop -Pyarn-ui -Dtar -Dwindows.cmake.build.type=RelWithDebInfo -Dwindows.build.hdfspp.dll=off -Dwindows.no.sasl=on -Duse.platformToolsetVersion=v142"
         continue-on-error: false
       - name: Package release data
         run: |
